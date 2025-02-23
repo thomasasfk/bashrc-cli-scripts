@@ -7,40 +7,40 @@ import os
 import textwrap
 import shutil
 import subprocess
+import time
 
 from gemini import GeminiClient, ResponseType
 
 
-def is_git_tracked(file_path: Path) -> bool:
+def _git_command(file_path: Path, command: list[str]) -> tuple[bool, str]:
     try:
         result = subprocess.run(
-            ["git", "ls-files", "--error-unmatch", str(file_path)],
+            command,
             capture_output=True,
             text=True,
             cwd=file_path.parent,
             check=False
         )
-        return result.returncode == 0
+        return result.returncode == 0, result.stdout.strip()
     except FileNotFoundError:
-        return False  # git not installed
-    except Exception:
-        return False  # error while checking git status
+        logging.debug(f"Git not found when checking {file_path}")
+        return False, ""
+    except Exception as e:
+        logging.debug(f"Error checking git for {file_path}: {e}")
+        return False, ""
+
+
+def is_git_tracked(file_path: Path) -> bool:
+    is_tracked, _ = _git_command(file_path, ["git", "ls-files", "--error-unmatch", str(file_path)])
+    logging.debug(f"File {file_path} is git tracked: {is_tracked}")
+    return is_tracked
 
 
 def has_git_changes(file_path: Path) -> bool:
-    try:
-        result = subprocess.run(
-            ["git", "status", "--porcelain", str(file_path)],
-            capture_output=True,
-            text=True,
-            cwd=file_path.parent,
-            check=False
-        )
-        return bool(result.stdout.strip())
-    except FileNotFoundError:
-        return False  # git not installed
-    except Exception:
-        return False  # error while checking git status
+    success, output = _git_command(file_path, ["git", "status", "--porcelain", str(file_path)])
+    has_changes = bool(output)  # True if there's any output, False if empty
+    logging.debug(f"File {file_path} has git changes: {has_changes}")
+    return has_changes
 
 
 def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
@@ -48,18 +48,14 @@ def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
         logging.error(f"Cannot read file: {file_path}")
         return False
 
-    backup_path = file_path.with_suffix(file_path.suffix + ".bak")
-
+    backup_path = file_path.with_suffix(f"{file_path.suffix}.{time.strftime("%Y%m%d%H%M%S")}.bak")
     if not is_git_tracked(file_path) or has_git_changes(file_path):
-        if backup_path.exists():
-            logging.warning(f"Backup file already exists, skipping backup: {backup_path}")
-        else:
-            try:
-                shutil.copy2(file_path, backup_path)
-                logging.info(f"Created backup: {backup_path}")
-            except Exception as e:
-                logging.error(f"Failed to create backup for {file_path}: {e}")
-                return False
+        try:
+            shutil.copy2(file_path, backup_path)
+            logging.info(f"Created backup: {backup_path}")
+        except Exception as e:
+            logging.error(f"Failed to create backup for {file_path}: {e}")
+            return False
 
     try:
         content = file_path.read_text()
@@ -92,9 +88,7 @@ def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
         return False
 
 
-def ai_action(path: str | Path, message: str) -> bool:
-    path = Path(path)
-
+def ai_action(path: Path, message: str) -> bool:
     try:
         client = GeminiClient(
             api_key=os.environ["GEMINI_API_KEY"],
@@ -133,7 +127,7 @@ def main():
         format='%(message)s'
     )
 
-    success = ai_action(args.path, args.message)
+    success = ai_action(Path(args.path), args.message)
     exit(0 if success else 1)
 
 
