@@ -43,13 +43,13 @@ options:
 usage: tailpal.py [-h] [--interval INTERVAL] [--persona PERSONA] [--debug] log_file
 
 positional arguments:
-  log_file
+  log_file             Path to the log file to monitor
 
 options:
   -h, --help           show this help message and exit
-  --interval INTERVAL
-  --persona PERSONA
-  --debug
+  --interval INTERVAL  Interval in seconds between log summaries
+  --persona PERSONA    Persona to use for the log summary
+  --debug              Enable debug logging
 ```
 
 ## Setup

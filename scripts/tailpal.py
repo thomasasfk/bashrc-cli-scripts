@@ -81,10 +81,10 @@ def handle_shutdown():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("log_file", type=Path)
-    parser.add_argument("--interval", type=int, default=5)
-    parser.add_argument("--persona", type=str, default="a concise systems analyst")
-    parser.add_argument("--debug", action="store_true")
+    parser.add_argument("log_file", type=Path, help="Path to the log file to monitor")
+    parser.add_argument("--interval", type=int, default=5, help="Interval in seconds between log summaries")
+    parser.add_argument("--persona", type=str, default="a concise systems analyst", help="Persona to use for the log summary")
+    parser.add_argument("--debug", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
 
     if not args.log_file.exists():
