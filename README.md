@@ -37,6 +37,21 @@ options:
   --debug     Enable debug logging
 ```
 
+### tailpal
+
+```
+usage: tailpal.py [-h] [--interval INTERVAL] [--persona PERSONA] [--debug] log_file
+
+positional arguments:
+  log_file
+
+options:
+  -h, --help           show this help message and exit
+  --interval INTERVAL
+  --persona PERSONA
+  --debug
+```
+
 ## Setup
 
 These scripts are automatically loaded and made available through your bashrc configuration. If you're setting up on a new system, ensure the repository is cloned and properly referenced in your `.bashrc` file.
