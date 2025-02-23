@@ -1,0 +1,5 @@
+_env.sh
+.venv
+.idea
+*.bak
+__pycache__
