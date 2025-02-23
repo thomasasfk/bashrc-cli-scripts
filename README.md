@@ -1,0 +1,46 @@
+# Description
+
+A collection of utility scripts and bash files that are executed by bashrc to make various tools and commands available across systems. The project serves as a central location for personal command-line tools and utilities.
+
+## Available Commands
+
+### gemini
+
+```
+usage: gemini.py [-h] [--response-type {raw_file,multifile_bash}] [--debug] prompt [prompt ...]
+
+Gemini API Client
+
+positional arguments:
+  prompt                The prompt to send to Gemini
+
+options:
+  -h, --help            show this help message and exit
+  --response-type {raw_file,multifile_bash}
+                        Response format type
+  --debug               Enable debug logging
+```
+
+### ai
+
+```
+usage: ai.py [-h] [--debug] path message
+
+Process files with AI modifications
+
+positional arguments:
+  path        Path to file or directory to process
+  message     Instructions for changes to make to the file(s)
+
+options:
+  -h, --help  show this help message and exit
+  --debug     Enable debug logging
+```
+
+## Setup
+
+These scripts are automatically loaded and made available through your bashrc configuration. If you're setting up on a new system, ensure the repository is cloned and properly referenced in your `.bashrc` file.
+
+## Requirements
+
+- For AI-related commands: `GEMINI_API_KEY` environment variable must be set
