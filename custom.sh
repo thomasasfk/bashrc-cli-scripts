@@ -8,6 +8,7 @@ apply_hooks() {
 
 alias gemini="$PYTHON_INTERPRETER $SCRIPT_DIR/gemini.py"
 alias ai="$PYTHON_INTERPRETER $SCRIPT_DIR/ai.py"
+alias tailpal="$PYTHON_INTERPRETER $SCRIPT_DIR/tailpal.py"
 
 gemini_c() {
     $PYTHON_INTERPRETER $SCRIPT_DIR/gemini.py "$@"
@@ -18,3 +19,8 @@ ai_c() {
     $PYTHON_INTERPRETER $SCRIPT_DIR/ai.py "$@"
 }
 export -f ai_c
+
+tailpal_c() {
+    $PYTHON_INTERPRETER $SCRIPT_DIR/tailpal.py "$@"
+}
+export -f tailpal_c
