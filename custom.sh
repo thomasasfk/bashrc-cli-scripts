@@ -8,3 +8,13 @@ apply_hooks() {
 
 alias gemini="$PYTHON_INTERPRETER $SCRIPT_DIR/gemini.py"
 alias ai="$PYTHON_INTERPRETER $SCRIPT_DIR/ai.py"
+
+gemini_c() {
+    $PYTHON_INTERPRETER $SCRIPT_DIR/gemini.py "$@"
+}
+export -f gemini_c
+
+ai_c() {
+    $PYTHON_INTERPRETER $SCRIPT_DIR/ai.py "$@"
+}
+export -f ai_c
