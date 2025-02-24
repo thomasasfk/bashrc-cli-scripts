@@ -29,44 +29,36 @@ jobs:
 
     - name: Ensure docs directory structure
       run: |
-        # Create all required directories first
-        mkdir -p docs/scripts
         mkdir -p docs/scripts/svg
-        
-        # Then clean up any existing files
-        rm -f docs/scripts/*.md 
-        rm -f docs/scripts/svg/*.svg
-        
-        # Verify directories exist (will fail workflow if not)
-        test -d docs/scripts || exit 1
-        test -d docs/scripts/svg || exit 1
+        rm -f docs/scripts/*.md docs/scripts/svg/*.svg
+        test -d docs/scripts/svg
 
     - name: Update documentation
+      env:
+        TERM: xterm-256color
+        FORCE_COLOR: 1
       run: |
         USAGE_TEXT="\n## Available Commands\n\n"
         
         for script in scripts/*.py; do
           name=$(basename "$script" .py)
           
-          # Get help text and calculate dimensions
           help_text=$(python "$script" --help 2>&1)
           width=$(echo "$help_text" | awk '{ print length }' | sort -nr | head -1)
           height=$(echo "$help_text" | wc -l)
           
-          # Add some padding
           width=$((width + 4))
           height=$((height + 2))
           
-          # Export SVG with calculated dimensions
           COLUMNS=$width LINES=$height python "$script" --export-help-svg "docs/scripts/svg/${name}.svg"
           
-          # Create markdown file that just embeds the SVG
+          usage_line=$(python "$script" --help 2>&1 | head -n 1)
+          
           cat > "docs/scripts/${name}.md" << EOF
         ![${name} help](svg/${name}.svg)
         EOF
           
-          # Update main usage text
-          USAGE_TEXT+="### ${name} *[(--help)](docs/scripts/${name}.md)*\n\n![${name} help](docs/scripts/svg/${name}.svg)\n\n"
+          USAGE_TEXT+="### ${name} *[(--help)](docs/scripts/${name}.md)*\n\n\`\`\`\n${usage_line}\n\`\`\`\n\n"
         done
         
         temp_file=$(mktemp)
