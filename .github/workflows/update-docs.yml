@@ -1,4 +1,4 @@
-name: Update README
+name: Update Documentation
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - 'scripts/**/*.py'
 
 jobs:
-  update-readme:
+  update-docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,23 +26,38 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Update README
+    - name: Ensure docs directory structure
       run: |
-        # Generate help text for all Python scripts
-        HELP_TEXT="\n## Available Commands\n\n"
+        mkdir -p docs/scripts
+        rm -f docs/scripts/*.md
+
+    - name: Update documentation
+      run: |
+        USAGE_TEXT="\n## Available Commands\n\n"
+
         for script in scripts/*.py; do
           name=$(basename "$script" .py)
-          HELP_TEXT+="### $name\n\n\`\`\`\n$(python "$script" --help)\n\`\`\`\n\n"
+
+          usage=$(python "$script" -h 2>&1 | head -n 1)
+
+          help_text=$(python "$script" --help 2>&1)
+          cat > "docs/scripts/${name}.md" << EOF
+        # ${name}
+
+        \`\`\`
+        ${help_text}
+        \`\`\`
+        EOF
+
+          USAGE_TEXT+="### ${name}\n\n\`\`\`\n${usage}\n\`\`\`\n\nSee [full documentation](docs/scripts/${name}.md)\n\n"
         done
-        
-        # Create temp file
+
         temp_file=$(mktemp)
-        
-        # Replace content between markers
-        awk -v help="$HELP_TEXT" '
+
+        awk -v usage="$USAGE_TEXT" '
           /\[\/\/\]: # \(START_HELP\)/ {
             print
-            print help
+            print usage
             skip = 1
             next
           }
@@ -53,19 +68,19 @@ jobs:
             print
           }
         ' README.md > "$temp_file"
-        
+
         mv "$temp_file" README.md
 
     - name: Check for changes
       id: git-check
       run: |
-        git diff --exit-code README.md || echo "changed=true" >> $GITHUB_OUTPUT
+        git diff --exit-code README.md docs/scripts/ || echo "changed=true" >> $GITHUB_OUTPUT
 
     - name: Commit changes
       if: steps.git-check.outputs.changed == 'true'
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add README.md
-        git commit -m "docs: Update README with latest command help"
+        git add README.md docs/scripts/
+        git commit -m "docs: Update script documentation"
         git push
