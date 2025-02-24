@@ -6,6 +6,22 @@ A collection of utility scripts and bash files that are executed by bashrc to ma
 
 ## Available Commands
 
+### ai
+
+```
+usage: ai.py [-h] [--debug] path message
+
+Process files with AI modifications
+
+positional arguments:
+  path        Path to file or directory to process
+  message     Instructions for changes to make to the file(s)
+
+options:
+  -h, --help  show this help message and exit
+  --debug     Enable debug logging
+```
+
 ### gemini
 
 ```
@@ -23,26 +39,11 @@ options:
   --debug               Enable debug logging
 ```
 
-### ai
-
-```
-usage: ai.py [-h] [--debug] path message
-
-Process files with AI modifications
-
-positional arguments:
-  path        Path to file or directory to process
-  message     Instructions for changes to make to the file(s)
-
-options:
-  -h, --help  show this help message and exit
-  --debug     Enable debug logging
-```
-
 ### tailpal
 
 ```
-usage: tailpal.py [-h] [--interval INTERVAL] [--persona PERSONA] [--debug] log_file
+usage: tailpal.py [-h] [--interval INTERVAL] [--persona PERSONA] [--debug]
+                  log_file
 
 positional arguments:
   log_file             Path to the log file to monitor
@@ -53,6 +54,7 @@ options:
   --persona PERSONA    Persona to use for the log summary
   --debug              Enable debug logging
 ```
+
 
 [//]: # (END_HELP)
 
