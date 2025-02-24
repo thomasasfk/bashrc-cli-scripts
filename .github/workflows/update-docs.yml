@@ -31,38 +31,33 @@ jobs:
       run: |
         mkdir -p docs/scripts/svg
         rm -f docs/scripts/*.md docs/scripts/svg/*.svg
-        test -d docs/scripts/svg
 
     - name: Update documentation
-      env:
-        TERM: xterm-256color
-        FORCE_COLOR: 1
       run: |
         USAGE_TEXT="\n## Available Commands\n\n"
-        
+
         for script in scripts/*.py; do
           name=$(basename "$script" .py)
-          
+
+          python "$script" --help 2>&1 | head -n 1 > usage.txt
+          usage_line=$(cat usage.txt)
+
           help_text=$(python "$script" --help 2>&1)
-          width=$(echo "$help_text" | awk '{ print length }' | sort -nr | head -1)
+
+          width=$(echo "$help_text" | awk '{print length}' | sort -nr | head -1)
           height=$(echo "$help_text" | wc -l)
-          
-          width=$((width + 4))
-          height=$((height + 2))
-          
+
           COLUMNS=$width LINES=$height python "$script" --export-help-svg "docs/scripts/svg/${name}.svg"
-          
-          usage_line=$(python "$script" --help 2>&1 | head -n 1)
-          
+
           cat > "docs/scripts/${name}.md" << EOF
         ![${name} help](svg/${name}.svg)
         EOF
-          
+
           USAGE_TEXT+="### ${name} *[(--help)](docs/scripts/${name}.md)*\n\n\`\`\`\n${usage_line}\n\`\`\`\n\n"
         done
-        
+
         temp_file=$(mktemp)
-        
+
         awk -v usage="$USAGE_TEXT" '
           /\[\/\/\]: # \(START_HELP\)/ {
             print
@@ -77,9 +72,8 @@ jobs:
             print
           }
         ' README.md > "$temp_file"
-        
-        mv "$temp_file" README.md
 
+        mv "$temp_file" README.md
     - name: Check for changes
       id: git-check
       run: |
