@@ -12,6 +12,8 @@ from rich.panel import Panel
 from rich.text import Text
 
 from gemini import GeminiClient
+from rich_argparse import RawDescriptionRichHelpFormatter
+from rich_argparse import HelpPreviewAction
 
 console = Console()
 
@@ -89,7 +91,7 @@ def main():
               %(prog)s /var/log/nginx/access.log -i 30 -p "caffeine-powered DevOps wizard" --debug
               %(prog)s /var/log/apache2/error.log -i 15 -p "grumpy BOFH from 1999"
         """),
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=RawDescriptionRichHelpFormatter
     )
     parser.add_argument("log_file", type=Path, help="Path to the log file to monitor")
     parser.add_argument("-i", "--interval", type=int, default=5, help="Interval in seconds between log summaries")
@@ -97,6 +99,11 @@ def main():
         "-p", "--persona", type=str, default="sarcastic system administrator", help="Persona to use for the log summary"
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument(
+        "--export-help-svg",
+        action=HelpPreviewAction,
+        help=argparse.SUPPRESS,
+    )
     args = parser.parse_args()
 
     if not args.log_file.exists():

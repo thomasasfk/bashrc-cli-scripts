@@ -5,10 +5,11 @@ import argparse
 import logging
 import os
 import textwrap
-from email.policy import default
 from typing import Any
 
 import requests
+from rich_argparse import RawDescriptionRichHelpFormatter
+from rich_argparse import HelpPreviewAction
 
 
 INSTRUCTIONS = {
@@ -97,7 +98,7 @@ def main():
               %(prog)s "Create a Python project structure" -rt files --debug
               %(prog)s --debug "Generate test data"
         """),
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=RawDescriptionRichHelpFormatter
     )
     parser.add_argument("prompt", nargs="+", help="The prompt to send to Gemini")
     parser.add_argument(
@@ -106,6 +107,11 @@ def main():
         help="Response format type"
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument(
+        "--export-help-svg",
+        action=HelpPreviewAction,
+        help=argparse.SUPPRESS,
+    )
     args = parser.parse_args()
 
     try:

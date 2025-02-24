@@ -9,7 +9,11 @@ import shutil
 import subprocess
 import time
 
+from charset_normalizer.md__mypyc import exports
+
 from gemini import GeminiClient
+from rich_argparse import RawDescriptionRichHelpFormatter
+from rich_argparse import HelpPreviewAction
 
 
 def _git_command(file_path: Path, command: list[str]) -> tuple[bool, str]:
@@ -118,11 +122,17 @@ def main():
               %(prog)s src/ "Update docstrings to Google style" --debug
               %(prog)s config.json "Add a new 'timeout' field set to 30"
         """),
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=RawDescriptionRichHelpFormatter
     )
     parser.add_argument("entry", help="Path to file or directory to process")
     parser.add_argument("message", help="Instructions for changes to make to the file(s)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument(
+        "--export-help-svg",
+        action=HelpPreviewAction,
+        help=argparse.SUPPRESS,
+    )
+
     args = parser.parse_args()
 
     logging.basicConfig(
