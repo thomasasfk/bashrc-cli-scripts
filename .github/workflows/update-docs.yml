@@ -1,6 +1,7 @@
 name: Update Documentation
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -49,7 +50,7 @@ jobs:
         \`\`\`
         EOF
 
-          USAGE_TEXT+="### ${name}\n\n\`\`\`\n${usage}\n\`\`\`\n\nSee [full documentation](docs/scripts/${name}.md)\n\n"
+          USAGE_TEXT+="### ${name} *[(--help)](docs/scripts/${name}.md)*\n\n\`\`\`\n${usage}\n\`\`\`\n\n"
         done
 
         temp_file=$(mktemp)
