@@ -8,21 +8,15 @@ A collection of utility scripts and bash files that are executed by bashrc to ma
 
 ### ai *[(--help)](docs/scripts/ai.md)*
 
-```
-usage: ai.py [-h] [--debug] entry message
-```
+![ai help](docs/scripts/svg/ai.svg)
 
 ### gemini *[(--help)](docs/scripts/gemini.md)*
 
-```
-usage: gemini.py [-h] [-rt {file,files,cmd}] [--debug] prompt [prompt ...]
-```
+![gemini help](docs/scripts/svg/gemini.svg)
 
 ### tailpal *[(--help)](docs/scripts/tailpal.md)*
 
-```
-usage: tailpal.py [-h] [-i INTERVAL] [-p PERSONA] [--debug] log_file
-```
+![tailpal help](docs/scripts/svg/tailpal.svg)
 
 
 [//]: # (END_HELP)
