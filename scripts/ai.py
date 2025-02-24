@@ -88,31 +88,25 @@ def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
         return False
 
 
-def ai_action(path: Path, message: str) -> bool:
-    try:
-        client = GeminiClient(
-            api_key=os.environ["GEMINI_API_KEY"],
-            debug=logging.getLogger().level == logging.DEBUG
-        )
+def ai_action(entry: Path, message: str) -> bool:
+    client = GeminiClient(
+        api_key=os.environ["GEMINI_API_KEY"],
+        debug=logging.getLogger().level == logging.DEBUG
+    )
 
-        if path.is_file():
-            return process_file(client, path, message)
+    if entry.is_file():
+        return process_file(client, entry, message)
 
-        elif path.is_dir():
-            files = list(path.rglob("*"))
-            if len(files) > 10:
-                logging.error(f"Directory contains more than 10 files ({len(files)} files found). Aborting.")
-                return False
-
-            return all(process_file(client, f, message) for f in files if f.is_file())
-
-        else:
-            logging.error(f"Path does not exist or is neither a file nor directory: {path}")
+    elif entry.is_dir():
+        files = list(entry.rglob("*"))
+        if len(files) > 10:
+            logging.error(f"Directory contains more than 10 files ({len(files)} files found). Aborting.")
             return False
 
-    except Exception as e:
-        logging.error(f"Error during processing: {e}")
-        return False
+        return all(process_file(client, f, message) for f in files if f.is_file())
+
+    logging.error(f"Path does not exist or is neither a file nor directory: {entry}")
+    return False
 
 
 def main():
@@ -126,7 +120,7 @@ def main():
         """),
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("path", help="Path to file or directory to process")
+    parser.add_argument("entry", help="Path to file or directory to process")
     parser.add_argument("message", help="Instructions for changes to make to the file(s)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
@@ -136,7 +130,7 @@ def main():
         format='%(message)s'
     )
 
-    success = ai_action(Path(args.path), args.message)
+    success = ai_action(Path(args.entry), args.message)
     exit(0 if success else 1)
 
 
