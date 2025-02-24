@@ -6,29 +6,23 @@ A collection of utility scripts and bash files that are executed by bashrc to ma
 
 ## Available Commands
 
-### ai
+### ai *[(--help)](docs/scripts/ai.md)*
 
 ```
 usage: ai.py [-h] [--debug] entry message
 ```
 
-See [full documentation](docs/scripts/ai.md)
-
-### gemini
+### gemini *[(--help)](docs/scripts/gemini.md)*
 
 ```
 usage: gemini.py [-h] [-rt {file,files,cmd}] [--debug] prompt [prompt ...]
 ```
 
-See [full documentation](docs/scripts/gemini.md)
-
-### tailpal
+### tailpal *[(--help)](docs/scripts/tailpal.md)*
 
 ```
 usage: tailpal.py [-h] [-i INTERVAL] [-p PERSONA] [--debug] log_file
 ```
-
-See [full documentation](docs/scripts/tailpal.md)
 
 
 [//]: # (END_HELP)
