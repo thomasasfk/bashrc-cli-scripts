@@ -5,6 +5,7 @@ import argparse
 import logging
 import os
 import textwrap
+from email.policy import default
 from typing import Any
 
 import requests
@@ -53,7 +54,7 @@ class GeminiClient:
         )
 
     def _prepare_prompt(self, prompt: str, response_type: str | None = None) -> str:
-        instructions = INSTRUCTIONS[response_type]
+        instructions = INSTRUCTIONS.get(response_type)
         if instructions:
             return f"{prompt}\n\n{instructions}"
         return prompt
