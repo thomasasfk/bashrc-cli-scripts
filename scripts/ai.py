@@ -77,7 +77,7 @@ def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
         """
         ).strip()
 
-        result = client.generate(prompt, ResponseType.RAW_FILE)
+        result = client.generate(prompt, ResponseType.FILE)
         file_path.write_text(result)
 
         logging.info(f"Successfully processed: {file_path}")

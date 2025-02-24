@@ -6,14 +6,15 @@ import argparse
 import logging
 import os
 import textwrap
-from typing import Any, Optional
+from typing import Any
 
 import requests
 
 
 class ResponseType(StrEnum):
-    RAW_FILE = auto()
-    MULTIFILE_BASH = auto()
+    FILE = auto()
+    FILES = auto()
+    CMD = auto()
 
 
 @dataclass
@@ -31,9 +32,9 @@ class GeminiClient:
             format='[%(levelname)s] %(message)s'
         )
 
-    def _prepare_prompt(self, prompt: str, response_type: Optional[ResponseType] = None) -> str:
+    def _prepare_prompt(self, prompt: str, response_type: ResponseType | None = None) -> str:
         match response_type:
-            case ResponseType.RAW_FILE:
+            case ResponseType.FILE:
                 instructions = textwrap.dedent(
                     """
                     IMPORTANT: Respond with ONLY raw file contents.
@@ -44,7 +45,7 @@ class GeminiClient:
                 ).strip()
                 return f"{prompt}\n\n{instructions}"
 
-            case ResponseType.MULTIFILE_BASH:
+            case ResponseType.FILES:
                 instructions = textwrap.dedent(
                     """
                     IMPORTANT: Respond with a bash script creating files:
@@ -58,6 +59,17 @@ class GeminiClient:
                 ).strip()
                 return f"{prompt}\n\n{instructions}"
 
+            case ResponseType.CMD:
+                instructions = textwrap.dedent(
+                    """
+                    IMPORTANT: Respond with ONLY a single line of executable bash code.
+                    No explanation, no markdown, no comments.
+                    The command should achieve the described task efficiently.
+                    Must be safe to pipe directly to bash.
+                """
+                ).strip()
+                return f"{prompt}\n\n{instructions}"
+
             case _:
                 return prompt
 
@@ -67,14 +79,13 @@ class GeminiClient:
         if not content:
             raise ValueError("Empty response from API")
 
-        # Strip markdown code blocks if present
         lines = content.split('\n')
         if lines[0].startswith('```') and lines[-1].startswith('```'):
             content = '\n'.join(lines[1:-1])
 
         return content.strip()
 
-    def generate(self, prompt: str, response_type: Optional[ResponseType] = None) -> str:
+    def generate(self, prompt: str, response_type: ResponseType | None = None) -> str:
         prepared_prompt = self._prepare_prompt(prompt, response_type)
         payload = {"contents": [{"parts": [{"text": prepared_prompt}]}]}
 
@@ -94,7 +105,8 @@ def main():
     parser = argparse.ArgumentParser(description="Gemini API Client")
     parser.add_argument("prompt", nargs="+", help="The prompt to send to Gemini")
     parser.add_argument(
-        "--response-type", choices=[t.name.lower() for t in ResponseType],
+        "-rt", "--response-type",
+        choices=[t.name.lower() for t in ResponseType],
         help="Response format type"
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")

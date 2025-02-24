@@ -32,7 +32,7 @@ class LogMonitor:
         prompt = f"""
         You are acting as {self.persona}. Analyze these new log entries and provide a summary:
 
-        {chr(10).join(self.new_logs)}
+        {"\n".join(self.new_logs)}
 
         Respond conversationally in character as {self.persona}, but keep it brief (1-2 sentences).
         Focus only on new activity, errors, or patterns seen in these specific log lines.

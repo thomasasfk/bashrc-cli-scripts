@@ -2,12 +2,14 @@
 
 A collection of utility scripts and bash files that are executed by bashrc to make various tools and commands available across systems. The project serves as a central location for personal command-line tools and utilities.
 
+[//]: # (START_HELP)
+
 ## Available Commands
 
 ### gemini
 
 ```
-usage: gemini.py [-h] [--response-type {raw_file,multifile_bash}] [--debug] prompt [prompt ...]
+usage: gemini.py [-h] [-rt {file,files,cmd}] [--debug] prompt [prompt ...]
 
 Gemini API Client
 
@@ -16,7 +18,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --response-type {raw_file,multifile_bash}
+  -rt, --response-type {file,files,cmd}
                         Response format type
   --debug               Enable debug logging
 ```
@@ -51,6 +53,8 @@ options:
   --persona PERSONA    Persona to use for the log summary
   --debug              Enable debug logging
 ```
+
+[//]: # (END_HELP)
 
 ## Setup
 
