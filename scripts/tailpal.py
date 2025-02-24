@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.13
-
+import textwrap
 from pathlib import Path
 import argparse
 import logging
@@ -80,10 +80,22 @@ def handle_shutdown():
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="AI-powered log monitoring with personality",
+        epilog=textwrap.dedent("""
+            examples:
+              %(prog)s /var/log/syslog
+              %(prog)s /var/log/auth.log -i 10 --persona "paranoid cybersecurity pirate"
+              %(prog)s /var/log/nginx/access.log -i 30 -p "caffeine-powered DevOps wizard" --debug
+              %(prog)s /var/log/apache2/error.log -i 15 -p "grumpy BOFH from 1999"
+        """),
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("log_file", type=Path, help="Path to the log file to monitor")
-    parser.add_argument("--interval", type=int, default=5, help="Interval in seconds between log summaries")
-    parser.add_argument("--persona", type=str, default="a concise systems analyst", help="Persona to use for the log summary")
+    parser.add_argument("-i", "--interval", type=int, default=5, help="Interval in seconds between log summaries")
+    parser.add_argument(
+        "-p", "--persona", type=str, default="sarcastic system administrator", help="Persona to use for the log summary"
+    )
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
 

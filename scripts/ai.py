@@ -116,7 +116,16 @@ def ai_action(path: Path, message: str) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process files with AI modifications")
+    parser = argparse.ArgumentParser(
+        description="Process files with AI modifications",
+        epilog=textwrap.dedent("""
+            examples:
+              %(prog)s file.py "Add type hints to all functions"
+              %(prog)s src/ "Update docstrings to Google style" --debug
+              %(prog)s config.json "Add a new 'timeout' field set to 30"
+        """),
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("path", help="Path to file or directory to process")
     parser.add_argument("message", help="Instructions for changes to make to the file(s)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")

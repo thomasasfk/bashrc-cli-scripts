@@ -88,7 +88,17 @@ class GeminiClient:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Gemini API Client")
+    parser = argparse.ArgumentParser(
+        description="Gemini API Client",
+        epilog=textwrap.dedent("""
+            examples:
+              %(prog)s "Write a Python script that prints hello world" --response-type file
+              %(prog)s "Create directories data/{in,out,temp}" -rt cmd
+              %(prog)s "Create a Python project structure" -rt files --debug
+              %(prog)s --debug "Generate test data"
+        """),
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("prompt", nargs="+", help="The prompt to send to Gemini")
     parser.add_argument(
         "-rt", "--response-type",
@@ -105,7 +115,6 @@ def main():
         )
 
         prompt = " ".join(args.prompt)
-
         result = client.generate(prompt, args.response_type)
         print(result)
         exit(0)
