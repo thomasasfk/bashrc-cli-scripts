@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import time
 
-from gemini import GeminiClient, ResponseType
+from gemini import GeminiClient
 
 
 def _git_command(file_path: Path, command: list[str]) -> tuple[bool, str]:
@@ -77,7 +77,7 @@ def process_file(client: GeminiClient, file_path: Path, message: str) -> bool:
         """
         ).strip()
 
-        result = client.generate(prompt, ResponseType.FILE)
+        result = client.generate(prompt, "file")
         file_path.write_text(result)
 
         logging.info(f"Successfully processed: {file_path}")
