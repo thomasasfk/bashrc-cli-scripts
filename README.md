@@ -9,7 +9,7 @@ A collection of utility scripts and bash files that are executed by bashrc to ma
 ### ai
 
 ```
-usage: ai.py [-h] [--debug] path message
+usage: ai.py [-h] [--debug] entry message
 ```
 
 See [full documentation](docs/scripts/ai.md)

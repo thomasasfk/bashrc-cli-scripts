@@ -1,12 +1,12 @@
 # ai
 
 ```
-usage: ai.py [-h] [--debug] path message
+usage: ai.py [-h] [--debug] entry message
 
 Process files with AI modifications
 
 positional arguments:
-  path        Path to file or directory to process
+  entry       Path to file or directory to process
   message     Instructions for changes to make to the file(s)
 
 options:
